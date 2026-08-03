@@ -1,31 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SearchBar } from './components/SearchBar';
 import { ResultsList } from './components/ResultsList';
 import { Pagination } from './components/Pagination';
 
 export function App() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [items, setItems] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+  const totalPages = 5; 
 
-  const dummyData = [
-    { id: 1, title: 'Nümunə Nəticə 1', body: 'Birinci kartın mətni' },
-    { id: 2, title: 'Nümunə Nəticə 2', body: 'İkinci kartın mətni' }
-  ];
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/posts?q=${searchTerm}&_page=${page}&_limit=6`
+        );
+        const data = await response.json();
+        setItems(data);
+      } catch (error) {
+        console.error('Data çəkilərkən xəta baş verdi:', error);
+      }
+    };
 
+    fetchData();
+  }, [searchTerm, page]); 
   return (
-    <div style={{ maxWidth: '600px', margin: '40px auto', padding: '0 20px' }}>
+    <div style={{ maxWidth: '700px', margin: '40px auto', padding: '0 20px' }}>
       <h2>API ilə İşləyən Axtarış Tətbiqi</h2>
       
       <SearchBar 
-        value={searchQuery} 
-        onChange={(e) => setSearchQuery(e.target.value)} 
+        value={searchTerm} 
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setPage(1); 
+        }} 
       />
 
-      <ResultsList items={dummyData} />
+      <ResultsList items={items} />
 
       <Pagination 
         currentPage={page} 
-        totalPages={5} 
+        totalPages={totalPages} 
         onPageChange={(newPage) => setPage(newPage)} 
       />
     </div>
