@@ -8,12 +8,13 @@ export function App() {
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const totalPages = 5;
+  const [totalPages, setTotalPages] = useState(1);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const LIMIT = 8; 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,12 +23,16 @@ export function App() {
 
       try {
         const response = await fetch(
-          `https://jsonplaceholder.typicode.com/posts?q=${debouncedSearchTerm}&_page=${page}&_limit=6`
+          `https://jsonplaceholder.typicode.com/posts?q=${debouncedSearchTerm}&_page=${page}&_limit=${LIMIT}`
         );
 
         if (!response.ok) {
           throw new Error('Məlumatları yükləmək mümkün olmadı.');
         }
+
+        const totalCountHeader = response.headers.get('X-Total-Count');
+        const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : 30;
+        setTotalPages(Math.ceil(totalCount / LIMIT));
 
         const data = await response.json();
         setItems(data);
@@ -49,7 +54,7 @@ export function App() {
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
-          setPage(1);
+          setPage(1); 
         }}
       />
 
