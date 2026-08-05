@@ -14,16 +14,20 @@ export function App() {
   const [error, setError] = useState(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const LIMIT = 8; 
+  const LIMIT = 6;
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
         const response = await fetch(
-          `https://jsonplaceholder.typicode.com/posts?q=${debouncedSearchTerm}&_page=${page}&_limit=${LIMIT}`
+          `https://jsonplaceholder.typicode.com/posts?q=${debouncedSearchTerm}&_page=${page}&_limit=${LIMIT}`,
+          { signal } 
         );
 
         if (!response.ok) {
@@ -37,14 +41,24 @@ export function App() {
         const data = await response.json();
         setItems(data);
       } catch (err) {
-        setError(err.message || 'Xəta baş verdi!');
+        
+        if (err.name !== 'AbortError') {
+          setError(err.message || 'Xəta baş verdi!');
+        }
       } finally {
-        setIsLoading(false);
+        if (!signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchData();
-  }, [debouncedSearchTerm, page]);
+
+    
+    return () => {
+      controller.abort();
+    };
+  }, [debouncedSearchTerm, page]); 
 
   return (
     <div style={{ maxWidth: '700px', margin: '40px auto', padding: '0 20px' }}>
@@ -54,7 +68,7 @@ export function App() {
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
-          setPage(1); 
+          setPage(1);
         }}
       />
 
