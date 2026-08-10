@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { SearchBar } from './components/SearchBar';
-import { ResultsList } from './components/ResultsList';
-import { Pagination } from './components/Pagination';
-import { useDebounce } from './hooks/useDebounce';
-import { useFetch } from './hooks/useFetch';
+import  useState  from 'react';
+import  SearchBar  from './components/SearchBar';
+import  ResultsList  from './components/ResultsList';
+import  Pagination  from './components/Pagination';
+import  useDebounce  from './hooks/useDebounce';
+import  useFetch  from './hooks/useFetch';
 
 export function App() {
   const [searchTerm, setSearchTerm] = useState('');
