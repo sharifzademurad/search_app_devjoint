@@ -1,6 +1,6 @@
-import { Card } from './Card';
+import Card from './Card';
 
-export const ResultsList = ({ items = [] }) => {
+const ResultsList = ({ items = [] }) => {
   return (
     <div className="results-list" style={{ display: 'grid', gap: '16px' }}>
       {items.map((item) => (
@@ -9,3 +9,5 @@ export const ResultsList = ({ items = [] }) => {
     </div>
   );
 };
+
+export default ResultsList;
