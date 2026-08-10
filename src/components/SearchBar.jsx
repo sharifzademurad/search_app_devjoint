@@ -1,4 +1,4 @@
-export const SearchBar = ({ value, onChange }) => {
+const SearchBar = ({ value, onChange }) => {
   return (
     <div className="search-bar" style={{ marginBottom: '20px' }}>
       <input
@@ -11,3 +11,5 @@ export const SearchBar = ({ value, onChange }) => {
     </div>
   );
 };
+
+export default SearchBar;
