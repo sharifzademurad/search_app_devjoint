@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useFetch = (url) => {
+const useFetch = (url) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,7 +26,7 @@ export const useFetch = (url) => {
         const totalCountHeader = response.headers.get('X-Total-Count');
         if (totalCountHeader) {
           const totalCount = parseInt(totalCountHeader, 10);
-          setTotalPages(Math.ceil(totalCount / 6)); 
+          setTotalPages(Math.ceil(totalCount / 6));
         }
 
         const result = await response.json();
@@ -51,3 +51,5 @@ export const useFetch = (url) => {
 
   return { data, isLoading, error, totalPages };
 };
+
+export default useFetch;
